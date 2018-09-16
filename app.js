@@ -5,21 +5,21 @@ var exphbs    = require('express-handlebars');
 // initialozes the application.
 const app = express();
 
-//how middleware works
-app.use( function(req, res, next) {
-	//console.log(Date.now());
-	req.name = "Amit singh";
-	next();
-});
+//Handlebars middleware
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
+
 //index Route
 app.get('/', (req, res) => {
-	console.log(req.name);
-	res.send("Index");
+	const title = "welcome";	
+	res.render("index",{
+		title:title
+	});
 });
 
 //about Route
 app.get('/about', (req, res) => {
-	res.send("Aboutkjs");
+	res.render("about");
 });
 
 const port = 5000;
