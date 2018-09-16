@@ -1,0 +1,16 @@
+{
+  "name": "vidjot",
+  "version": "1.0.0",
+  "description": "Creating video application idea with node and express",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Amit Singh",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.3",
+    "express-handlebars": "^3.0.0",
+    "nodemon": "^1.18.4"
+  }
+}
