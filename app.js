@@ -7,9 +7,15 @@ const mongoose = require('mongoose');
 const app = express();
 
 //connect to mongoose
-mongoose.connect('mongodb://localhost/vidjot-dev', {
-	useMongoClient: true
-});
+mongoose.connect('mongodb://localhost/vidjot-dev')
+ .then(()=> {
+	 console.log("mongodb connected");
+ })
+ .catch((err) => console.log(err));
+
+ //load the model
+ require('./models/Idea');
+ const Idea = mongoose.model('ideas');
 
 //Handlebars middleware
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
