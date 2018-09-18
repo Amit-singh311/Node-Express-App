@@ -1,9 +1,15 @@
 //requiring the depency of the project.
-const express = require('express');
-var exphbs    = require('express-handlebars');
+const express  = require('express');
+var exphbs     = require('express-handlebars');
+const mongoose = require('mongoose');
 
 // initialozes the application.
 const app = express();
+
+//connect to mongoose
+mongoose.connect('mongodb://localhost/vidjot-dev', {
+	useMongoClient: true
+});
 
 //Handlebars middleware
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
@@ -11,7 +17,8 @@ app.set('view engine', 'handlebars');
 
 //index Route
 app.get('/', (req, res) => {
-	const title = "welcome";	
+	const title = "welcome";
+	//passing data to the view by making an object as the second parameter	
 	res.render("index",{
 		title:title
 	});
