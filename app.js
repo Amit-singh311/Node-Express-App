@@ -2,6 +2,7 @@
 const express  = require('express');
 var exphbs     = require('express-handlebars');
 const mongoose = require('mongoose');
+var bodyParser = require('body-parser');
 
 // initialozes the application.
 const app = express();
@@ -21,6 +22,11 @@ mongoose.connect('mongodb://localhost/vidjot-dev')
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
+//body-parser middleware
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 //index Route
 app.get('/', (req, res) => {
 	const title = "welcome";
@@ -33,6 +39,32 @@ app.get('/', (req, res) => {
 //about Route
 app.get('/about', (req, res) => {
 	res.render("about");
+});
+
+//ideas add Route
+app.get('/ideas/add', (req, res) => {
+	res.render("ideas/add");
+});
+
+
+//processing ideas
+app.post('/ideas', (req, res) => {
+	new Idea(req.body)
+	   .save()
+	   .then(ideas =>{
+		   res.redirect('/idea');
+	   });
+
+});
+
+app.get('/idea', (req, res) => {
+	Idea.find({})
+	    .sort({date:'desc'})
+	    .then(ideas => {
+			res.render('ideas/index', {
+				ideas:ideas
+			});
+		});	
 });
 
 const port = 5000;
