@@ -10,16 +10,16 @@ const session        = require('express-session');
 // initializes the application.
 const app = express();
 
+//loading ideas routes
+const ideas          = require('./routes/ideas');
+const users          = require('./routes/users');
+
 //connect to mongoose
 mongoose.connect('mongodb://localhost/vidjot-dev')
  .then(()=> {
 	 console.log("mongodb connected");
  })
- .catch((err) => console.log(err));
-
- //load the model
- require('./models/Idea');
- const Idea = mongoose.model('ideas');
+ .catch((err) => console.log(err)); 
 
 //Handlebars middleware
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
@@ -65,70 +65,11 @@ app.get('/about', (req, res) => {
 	res.render("about");
 });
 
-//ideas add Route
-app.get('/ideas/add', (req, res) => {
-	res.render("ideas/add");
-});
 
-//ideas edit Route
-app.get('/ideas/edit/:id', (req, res) => {	
-	Idea.findOne({
-		_id: req.params.id
-	})
-	.then(idea => {
-		res.render("ideas/edit", {
-			idea:idea
-		});
-	});	
-});
 
-//processing ideas
-app.post('/ideas', (req, res) => {
-	new Idea(req.body)
-	   .save()
-	   .then(ideas => {
-		   req.flash('success_msg', 'video idea added');
-		   res.redirect('/idea');
-	   });
 
-});
-
-//processing the ideas after the edit 
-app.put('/ideas/:id', (req, res) => {
-	Idea.findOne({
-		_id : req.params.id
-	})
-	.then(idea => {
-		idea.title    = req.body.title;
-		idea.details  = req.body.details;
-		idea.save()
-		.then(idea => {
-			req.flash('success_msg', 'video idea updated');
-			res.redirect('/idea');
-		});
-	});	
-});
-
-//delete method 
-app.delete('/ideas/:id', (req, res) => {
-	Idea.remove({
-		_id : req.params.id
-	})
-	.then(() => {
-		req.flash('success_msg', 'video idea removed');
-		res.redirect('/idea');
-	});
-});
-//displaying all the ideas on the idea page
-app.get('/idea', (req, res) => {
-	Idea.find({})
-	    .sort({date:'desc'})
-	    .then(ideas => {
-			res.render('ideas/index', {
-				ideas:ideas
-			});
-		});	
-});
+app.use('/ideas', ideas);
+app.use('/users', users);
 
 const port = 5000;
 
